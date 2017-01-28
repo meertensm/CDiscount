@@ -12,9 +12,7 @@
     ],
     "require": {
         "php": ">= 5.4",
-        "paquettg/php-html-parser": "^1.7",
-        "shanethehat/pretty-xml": "~1.0.2",
-        "symfony/var-dumper": "dev-master"
+        "shanethehat/pretty-xml": "~1.0.2"
     },
     "require-dev": {},
     "autoload": {
