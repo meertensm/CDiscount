@@ -1,0 +1,25 @@
+{
+    "name": "mcs/cdiscount",
+    "description": "CDiscount API",
+    "license": "MIT",
+    "keywords": ["cdiscount"],
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Michiel Meertens",
+            "email": "meertensmichiel28@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">= 5.4",
+        "paquettg/php-html-parser": "^1.7",
+        "shanethehat/pretty-xml": "~1.0.2",
+        "symfony/var-dumper": "dev-master"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "MCS\\": "src"
+        }
+    }
+}
