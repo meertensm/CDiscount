@@ -336,7 +336,7 @@ class CDiscount
         
         $id_dir = $dir . $id . '/';
         
-        $copy = str_replace('/src' , '/src/copy');
+        $copy = str_replace('/src' , '/src/copy', $copy);
                 
         if (file_exists($id_dir)) {
             shell_exec("rm -rf '$id_dir'");
