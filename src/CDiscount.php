@@ -63,7 +63,7 @@ class CDiscount
             throw new Exception("Directory $zipDir does not exist");    
         }
         
-        $this->zipDir = $zipDir;
+        $this->zipDir = rtrim($zipDir, '/') . '/';
         
         $this->setLogin($login)
              ->setPassw($passw);
@@ -332,17 +332,17 @@ class CDiscount
         
         $id = rand();
         
-        $dir = rtrim($this->zipDir, '/') . '/';
+        $dir = $this->zipDir;
         
         $id_dir = $dir . $id . '/';
         
-        $copy = str_replace('/src' , '/src/copy', $copy);
+        $copy = str_replace('/src' , '/src/copy', __DIR__);
                 
         if (file_exists($id_dir)) {
             shell_exec("rm -rf '$id_dir'");
         }
         
-        shell_exec("cp -r '$copy' '$id_dir'");
+        echo shell_exec("cp -r '$copy' '$id_dir'");
         
         file_put_contents($id_dir . 'Content/Offers.xml', $formatter->format($xml));
         
