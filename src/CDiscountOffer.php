@@ -32,6 +32,7 @@ class CDiscountOffer{
     public $StrikedPrice;
     public $VatRate;
     public $ShippingInformationList;
+    public $PreparationTime = '1';
     
     public function __construct(array $array)
     {
@@ -61,9 +62,9 @@ class CDiscountOffer{
             'ProductEan',
             'ProductCondition',
             'Price',
-            'EcoPart',
+            'EcoTax',
             'DeaTax',
-            'Vat',
+            'VatRate',
             'Stock',
             'StrikedPrice',
             'Comment',
@@ -75,7 +76,12 @@ class CDiscountOffer{
         ];
         
         foreach ($attributes as $attribute) {
-            $array[$attribute] = htmlspecialchars($this->{$attribute});    
+            
+            if ($attribute == 'ProductCondition') {
+                $array[$attribute] = 6;
+            } else {
+                $array[$attribute] = htmlspecialchars($this->{$attribute});            
+            }
         }
         
         foreach ($this->ShippingInformationList as $info) {

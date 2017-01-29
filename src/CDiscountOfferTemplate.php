@@ -32,15 +32,22 @@ class CDiscountOfferTemplate {
     public static function offer($array)
     {
         $formatter = new Formatter();
-        $template = '<Offer SellerProductId="%SellerProductId%" ProductEan="%ProductEan%" ProductCondition="%ProductCondition%" Price="%Price%" EcoPart="%EcoPart%" DeaTax="%DeaTax%" Vat="%Vat%" Stock="%Stock%" StrikedPrice="%StrikedPrice%" Comment="%Comment%" PreparationTime="%PreparationTime%"></Offer>';
+        $template = '<Offer SellerProductId="%SellerProductId%" ProductEan="%ProductEan%" ProductCondition="%ProductCondition%" Price="%Price%" EcoPart="%EcoTax%" DeaTax="%DeaTax%" Vat="%VatRate%" Stock="%Stock%"  Comment="%Comment%" PreparationTime="%PreparationTime%"></Offer>';
         foreach ($array as $key => $value) {
             if (!is_array($value)) {
                 $template = str_replace("%$key%", htmlspecialchars($value), $template);        
             } else if ($key == 'ShippingInformationList') {
-                $list = '<Offer.ShippingInformationList><ShippingInformationList Capacity="' . count($key) . '">';        
+                $list = '<Offer.ShippingInformationList><ShippingInformationList Capacity="' . count($value) . '">';        
                 foreach ($value as $ShippingInformationList) {
                     $temp = '<ShippingInformation AdditionalShippingCharges="%AdditionalShippingCharges%" DeliveryMode="%DeliveryMode%" ShippingCharges="%ShippingCharges%" />';
                     foreach ($ShippingInformationList as $k => $v) {
+                        
+                        if ($v == 'Suivi') {
+                            $v = 'Tracked';    
+                        } else if ($v == 'Recommandé') {
+                            $v = 'Registered';    
+                        }
+                        
                         $temp = str_replace("%$k%", htmlspecialchars($v), $temp);        
                     }
                     $list .= $temp;
@@ -49,5 +56,6 @@ class CDiscountOfferTemplate {
             }
         }
         return $template;
+        return $formatter->format($template);
     }
 }

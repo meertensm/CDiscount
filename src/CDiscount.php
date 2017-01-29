@@ -319,8 +319,7 @@ class CDiscount
         
         if (is_array($offers)) {
             foreach ($offers as $offer) {
-                $template->addOffer($offer);        
-                $template->addOffer($offer);        
+                $template->addOffer($offer);          
             }
         } else {
             $template->addOffer($offers);    
@@ -358,7 +357,10 @@ class CDiscount
             shell_exec("rm -rf '$id_dir'");        
         }
         
-        return $zipFile;
+        return [
+            'file_path' => $zipFile,
+            'file' => $id . '.zip'
+        ];
     }
     
     /**
@@ -378,6 +380,24 @@ class CDiscount
 
         try {
             $this->lastResult = $this->getSoap()->SubmitOfferPackage($params);
+        } catch (SoapFault $exception) {
+            echo '<div class="alert alert-danger">' . $exception->getMessage() . '</div>';
+        }
+        return $this->lastResult;
+    }
+    
+    public function GetOfferPackageSubmissionResult($id)
+    {
+        $this->lastResult = null;
+        $params = array(
+            'headerMessage' => $this->getHeaderMessage(),
+            'offerPackageFilter' => $this->array2object(array(
+                'PackageID' => $id,
+            )),
+        );
+
+        try {
+            $this->lastResult = $this->getSoap()->GetOfferPackageSubmissionResult($params);
         } catch (SoapFault $exception) {
             echo '<div class="alert alert-danger">' . $exception->getMessage() . '</div>';
         }
