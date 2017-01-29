@@ -12,7 +12,7 @@ use MCS\CDiscountOrder;
 use MCS\CDiscountOrderAddress;
 use MCS\CDiscountOrderItem;
 
-class CDiscount
+class CDiscountClient
 {
     /**
      * URL du token
@@ -57,16 +57,15 @@ class CDiscount
      * @param string $login
      * @param string $passw
      */
-    public function __construct($zipDir, $login = null, $passw = null)
+    public function __construct($login = null, $passw = null)
     {
-        if (!is_dir($zipDir)) {
-            throw new Exception("Directory $zipDir does not exist");    
-        }
-        
-        $this->zipDir = rtrim($zipDir, '/') . '/';
-        
         $this->setLogin($login)
              ->setPassw($passw);
+    }
+    
+    public function setZipDir($zipDir)
+    {
+        $this->zipDir = rtrim($zipDir, '/') . '/';    
     }
 
     /**
@@ -156,6 +155,11 @@ class CDiscount
         return json_decode(json_encode($this->lastResult), true);
     }
 
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+    
     /**
      * @return string|bool
      * @throws Exception
@@ -222,7 +226,7 @@ class CDiscount
         return $this->lastResult;
     }
     
-    protected function getOrderFilter()
+    protected function getOrderFilter($states)
     {   
         $start = new DateTime('-1 week');
         $start = $start->format(DateTime::ATOM);
@@ -234,21 +238,21 @@ class CDiscount
             'BeginCreationDate' => $start,    
             'EndCreationDate' => $end, 
             'FetchOrderLines' => true,
-            'States' => [
-                'CancelledByCustomer',
-                'WaitingForSellerAcceptation',
-                'AcceptedBySeller',
-                'Shipped',
-            ]
+            'States' => $states
         ]);
     }
     
-    public function getOrders()
+    /**
+     * List all orders, fitlered by status
+     * @param  array $states https://dev.cdiscount.com/marketplace/?page_id=130
+     * @return array listo of orders
+     */
+    public function getOrders($states)
     {
         $this->lastResult = null;
         $params = array(
             'headerMessage' => $this->getHeaderMessage(),
-            'orderFilter' => $this->getOrderFilter()
+            'orderFilter' => $this->getOrderFilter($states)
         );
 
         try {
@@ -271,6 +275,9 @@ class CDiscount
                         $order['ShippingAddress'],
                         $order['BillingAddress']
                     ); 
+                    $cd_order->Email = $order['Customer']['EncryptedEmail'];
+                    $cd_order->MobilePhone = $order['Customer']['MobilePhone'];
+                    $cd_order->Phone = $order['Customer']['Phone'];
                     foreach ($order['OrderLineList']['OrderLine'] as $line) {
                         $cd_order->addOrderItem($line);        
                     }   
@@ -319,7 +326,8 @@ class CDiscount
         
         if (is_array($offers)) {
             foreach ($offers as $offer) {
-                $template->addOffer($offer);          
+                $template->addOffer($offer);        
+                //$template->addOffer($offer);        
             }
         } else {
             $template->addOffer($offers);    

@@ -15,6 +15,9 @@ class CDiscountOrder{
     public $VisaCegid;
     public $ValidationStatus;
     public $HasClaims;
+    public $Email;
+    public $Phone;
+    public $MobilePhone;
     
     public $ModGesLog;
     public $Offer;
