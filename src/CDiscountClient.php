@@ -278,6 +278,9 @@ class CDiscountClient
                     $cd_order->Email = $order['Customer']['EncryptedEmail'];
                     $cd_order->MobilePhone = $order['Customer']['MobilePhone'];
                     $cd_order->Phone = $order['Customer']['Phone'];
+                    if (isset($order['OrderLineList']['OrderLine']['AcceptationState'])) {
+                        $order['OrderLineList']['OrderLine'] = [$order['OrderLineList']['OrderLine']];
+                    }
                     foreach ($order['OrderLineList']['OrderLine'] as $line) {
                         $cd_order->addOrderItem($line);        
                     }   
