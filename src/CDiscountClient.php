@@ -327,35 +327,8 @@ class CDiscountClient
         } catch (SoapFault $exception) {
             echo '<div class="alert alert-danger">' . $exception->getMessage() . '</div>';
         }
-        $response = $this->getLastResultArray();
+        return $this->getLastResultArray();
         
-        $orders = [];
-        if (isset($response['GetOrderListResult']['OrderList']['Order'])) {
-            $response = $response['GetOrderListResult']['OrderList']['Order'];
-            if (is_array($response)) {
-                if (isset($response['ArchiveParcelList'])) {
-                    $response = [$response];        
-                }
-                foreach ($response as $order) {
-                    $cd_order = new CDiscountOrder(
-                        $order,
-                        $order['ShippingAddress'],
-                        $order['BillingAddress']
-                    ); 
-                    $cd_order->Email = $order['Customer']['EncryptedEmail'];
-                    $cd_order->MobilePhone = $order['Customer']['MobilePhone'];
-                    $cd_order->Phone = $order['Customer']['Phone'];
-                    if (isset($order['OrderLineList']['OrderLine']['AcceptationState'])) {
-                        $order['OrderLineList']['OrderLine'] = [$order['OrderLineList']['OrderLine']];
-                    }
-                    foreach ($order['OrderLineList']['OrderLine'] as $line) {
-                        $cd_order->addOrderItem($line);        
-                    }   
-                    $orders[$order['OrderNumber']] = $cd_order;
-                }
-            }
-        }
-        return $orders;
     }
     
     protected function getOfferFilter()
