@@ -312,12 +312,14 @@ class CDiscountClient
         );
         
         foreach ($order->OrderItems as $item) {
-            $params['validateOrderListMessage']['OrderList']['ValidateOrder']['OrderLineList']['ValidateOrderLine'][] = [
-                'Sku' => $item->Sku,
-                'AcceptationState' => 'ShippedBySeller',
-                'ProductCondition' => 'New',
-                'SellerProductId' => $item->SellerProductId
-            ];       
+            if ($item->Sku != 'INTERETBCA') {
+                $params['validateOrderListMessage']['OrderList']['ValidateOrder']['OrderLineList']['ValidateOrderLine'][] = [
+                    'Sku' => $item->Sku,
+                    'AcceptationState' => 'ShippedBySeller',
+                    'ProductCondition' => 'New',
+                    'SellerProductId' => $item->SellerProductId
+                ]; 
+            }
         }
         
         $params['validateOrderListMessage'] = $this->array2object($params['validateOrderListMessage']);
