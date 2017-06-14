@@ -365,14 +365,64 @@ class CDiscountClient
         return $offers;
     }
 
+    public function updateOfferStockAndPrice($offers)
+    {
+        $template = new CDiscountOfferPriceTemplate('update ' . rand());    
+        
+        if (is_array($offers)) {
+            foreach ($offers as $offer) {
+                $template->addOffer($offer);                
+            }
+        } else {
+            $template->addOffer($offers);    
+        }
+        
+        $xml = $template->get();
+        
+        $formatter = new Formatter();
+        
+        $id = rand();
+        
+        $dir = $this->zipDir;
+        
+        $id_dir = $dir . $id . '/';
+        
+        $copy = str_replace('/src' , '/src/copy', __DIR__);
+                
+        if (file_exists($id_dir)) {
+            shell_exec("rm -rf '$id_dir'");
+        }
+        
+        echo shell_exec("cp -r '$copy' '$id_dir'");
+        
+        file_put_contents($id_dir . 'Content/Offers.xml', $formatter->format($xml));
+        
+        $zipFile = $dir . $id . '.zip';
+        
+        if (file_exists($zipFile)) {
+            unlink($zipFile);
+        }
+        
+        shell_exec("cd $id_dir; zip -r ../$id.zip * -x *.DS_Store*");
+        
+        if (is_dir($id_dir)) {
+            shell_exec("rm -rf '$id_dir'");        
+        }
+        
+        return [
+            'file_path' => $zipFile,
+            'file' => $id . '.zip'
+        ];
+        
+    }
+    
     public function updateOffers($offers)
     {
         $template = new CDiscountOfferTemplate('update ' . rand(), true);    
         
         if (is_array($offers)) {
             foreach ($offers as $offer) {
-                $template->addOffer($offer);        
-                //$template->addOffer($offer);        
+                $template->addOffer($offer);                
             }
         } else {
             $template->addOffer($offers);    
