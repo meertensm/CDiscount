@@ -416,6 +416,56 @@ class CDiscountClient
         
     }
     
+    public function createProducts($products)
+    {
+        $template = new CDiscountProductTemplate('new products ' . rand(), true);        
+        
+        if (is_array($products)) {
+            foreach ($products as $product) {
+                $template->addProduct($product);                
+            }
+        } else {
+            $template->addProduct($products);    
+        }
+        
+        $xml = $template->get();
+        
+        $formatter = new Formatter();
+        
+        $id = rand();
+        
+        $dir = $this->zipDir;
+        
+        $id_dir = $dir . $id . '/';
+        
+        $copy = str_replace('/src' , '/src/copy_products', __DIR__);
+                
+        if (file_exists($id_dir)) {
+            shell_exec("rm -rf '$id_dir'");
+        }
+        
+        echo shell_exec("cp -r '$copy' '$id_dir'");
+        
+        file_put_contents($id_dir . 'Content/Products.xml', $formatter->format($xml));
+        
+        $zipFile = $dir . $id . '.zip';
+        
+        if (file_exists($zipFile)) {
+            unlink($zipFile);
+        }
+        
+        shell_exec("cd $id_dir; zip -r ../$id.zip * -x *.DS_Store*");
+        
+        if (is_dir($id_dir)) {
+            shell_exec("rm -rf '$id_dir'");        
+        }
+        
+        return [
+            'file_path' => $zipFile,
+            'file' => $id . '.zip'
+        ];
+    }
+    
     public function updateOffers($offers)
     {
         $template = new CDiscountOfferTemplate('update ' . rand(), true);    

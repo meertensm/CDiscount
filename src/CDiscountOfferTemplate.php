@@ -5,14 +5,14 @@ use PrettyXml\Formatter;
 
 class CDiscountOfferTemplate {
     
-    protected $PurgeAndReplace = 'False';
+    protected $PurgeAndReplace = 'True';
     protected $Name;
     protected $offers = [];
     
     public function __construct($Name, $PurgeAndReplace)
     {
         $this->Name = $Name;
-        $this->PurgeAndReplace = $PurgeAndReplace == false ? 'False' : 'True';  
+        $this->PurgeAndReplace = ($PurgeAndReplace == false ? 'False' : 'True');  
     }
     
     public function addOffer($offer)
