@@ -538,6 +538,24 @@ class CDiscountClient
         }
         return $this->lastResult;
     }
+        
+    public function GetProductPackageSubmissionResult($id)
+    {
+        $this->lastResult = null;
+        $params = array(
+            'headerMessage' => $this->getHeaderMessage(),
+            'productPackageFilter' => $this->array2object(array(
+                'PackageID' => $id,
+            )),
+        );
+        
+        try {
+            $this->lastResult = $this->getSoap()->GetProductPackageSubmissionResult($params);
+        } catch (SoapFault $exception) {
+            echo '<div class="alert alert-danger">' . $exception->getMessage() . '</div>';
+        }
+        return $this->lastResult;
+    }
     
     public function GetOfferPackageSubmissionResult($id)
     {
