@@ -8,8 +8,6 @@ class CDiscountOrderAddress{
     public $Street;
     public $Address1;
     public $Address2;
-    public $Building;
-    public $ApartmentNumber;
     public $ZipCode;
     public $City;
     public $Country;
